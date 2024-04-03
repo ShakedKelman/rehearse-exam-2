@@ -122,41 +122,76 @@
 
 // with ajax
 
-$(function() {
-    // Create the select element
-    const selectedNum = $('<select>').attr('id', 'selected-number');
+// $(function() {
+//     // Create the select element
+//     const selectedNum = $('<select>').attr('id', 'selected-number');
 
-    // Add the default empty option
+//     // Add the default empty option
+//     const defaultOption = $('<option>').attr('value', '').html('');
+//     selectedNum.append(defaultOption);
+
+//     // Add options from 1 to 10
+//     for (let i = 1; i <= 10; i++) {
+//         const option = $('<option>').attr('value', i).html(i);
+//         selectedNum.append(option);
+//     }
+
+//     // Append the select element to the body
+//     $('body').append(selectedNum);
+
+//     // Add change event listener inside the jQuery function
+//     selectedNum.on('change', function () {
+//         const selectedValue = selectedNum.val();
+//         console.log("Selected value:", selectedValue);
+
+//         $.ajax({
+//             url: 'https://jsonplaceholder.typicode.com/users',
+//             method: 'GET',
+//             success: function(json) {
+//                 const user = json[selectedValue - 1]; // Adjusting index to match the selected value
+//                 const newRow = `User ID: ${user.id}, Username: ${user.username}, Email: ${user.email}, City: ${user.address.city}`;
+//                 console.log(newRow);
+//                 const showElement = document.createElement('div');
+//                 // Set the inner HTML of the new div element to the newRow content
+//                 showElement.innerHTML = newRow;
+
+//                 // Append the new div element to the HTML body
+//                 document.body.appendChild(showElement);
+//     }});
+//     });
+// });
+
+// with await and async
+$(function() {
+    const selectedNum = $('<select>').attr('id', 'selected-number');
     const defaultOption = $('<option>').attr('value', '').html('');
     selectedNum.append(defaultOption);
 
-    // Add options from 1 to 10
     for (let i = 1; i <= 10; i++) {
         const option = $('<option>').attr('value', i).html(i);
         selectedNum.append(option);
     }
-
-    // Append the select element to the body
     $('body').append(selectedNum);
 
-    // Add change event listener inside the jQuery function
-    selectedNum.on('change', function () {
+    selectedNum.on('change', async function () {
         const selectedValue = selectedNum.val();
         console.log("Selected value:", selectedValue);
 
-        $.ajax({
-            url: 'https://jsonplaceholder.typicode.com/users',
-            method: 'GET',
-            success: function(json) {
-                const user = json[selectedValue - 1]; // Adjusting index to match the selected value
-                const newRow = `User ID: ${user.id}, Username: ${user.username}, Email: ${user.email}, City: ${user.address.city}`;
-                console.log(newRow);
-                const showElement = document.createElement('div');
-                // Set the inner HTML of the new div element to the newRow content
-                showElement.innerHTML = newRow;
-
-                // Append the new div element to the HTML body
-                document.body.appendChild(showElement);
-    }});
+        // Fetch users data and display them
+        const users = await fetchUsers('https://jsonplaceholder.typicode.com/users');
+        fetchAndDisplayUsers(users, selectedValue);
     });
+
+    async function fetchAndDisplayUsers(users, selectedValue) {
+        const user = users[selectedValue - 1]; // Adjusting index to match the selected value
+        const el = `<div class="whatever">The user name is ${user.name}</div>`;
+        const showElement = document.createElement('div');
+        showElement.innerHTML += el;
+        document.body.appendChild(showElement);
+    }
+
+    async function fetchUsers(url) {
+        const response = await fetch(url);
+        return await response.json();
+    }
 });
