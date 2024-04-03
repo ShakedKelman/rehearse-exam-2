@@ -161,18 +161,24 @@
 //     });
 // });
 
+
 // with await and async
-$(function() {
+$(function () {
     const selectedNum = $('<select>').attr('id', 'selected-number');
     const defaultOption = $('<option>').attr('value', '').html('');
     selectedNum.append(defaultOption);
 
-    for (let i = 1; i <= 10; i++) {
-        const option = $('<option>').attr('value', i).html(i);
-        selectedNum.append(option);
-    }
+    fetchUsers('https://jsonplaceholder.typicode.com/users')
+        .then(users => {
+            // Iterate over the users and create an option for each one
+            users.forEach(user => {
+                const option = $('<option>').attr('value', user.id).html(user.name);
+                selectedNum.append(option);
+            });
+        })
     $('body').append(selectedNum);
 
+    // Move the event listener inside the jQuery function
     selectedNum.on('change', async function () {
         const selectedValue = selectedNum.val();
         console.log("Selected value:", selectedValue);
@@ -181,20 +187,18 @@ $(function() {
         const users = await fetchUsers('https://jsonplaceholder.typicode.com/users');
         fetchAndDisplayUsers(users, selectedValue);
     });
-
-    async function fetchAndDisplayUsers(users, selectedValue) {
-        const user = users[selectedValue - 1]; 
-        let el = `<div>The user id is ${user.id} name is ${user.name} the address is ${user.city}</div>`;
-        const showElement = document.createElement('div');
-        showElement.innerHTML = '';
-        showElement.innerHTML += el;
-        document.body.appendChild(showElement);
-
-        
-    }
-
-    async function fetchUsers(url) {
-        const response = await fetch(url);
-        return await response.json();
-    }
 });
+
+async function fetchAndDisplayUsers(users, selectedValue) {
+    const user = users[selectedValue - 1];
+    let el = `<div>The user id is ${user.id} name is ${user.name} the address is ${user.address.city} at zipcode ${user.address.zipcode} </div>`;
+    const showElement = document.createElement('div');
+    showElement.innerHTML = '';
+    showElement.innerHTML += el;
+    document.body.appendChild(showElement);
+}
+
+async function fetchUsers(url) {
+    const response = await fetch(url);
+    return await response.json();
+}
