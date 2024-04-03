@@ -183,11 +183,14 @@ $(function() {
     });
 
     async function fetchAndDisplayUsers(users, selectedValue) {
-        const user = users[selectedValue - 1]; // Adjusting index to match the selected value
-        const el = `<div class="whatever">The user name is ${user.name}</div>`;
+        const user = users[selectedValue - 1]; 
+        let el = `<div>The user id is ${user.id} name is ${user.name} the address is ${user.city}</div>`;
         const showElement = document.createElement('div');
+        showElement.innerHTML = '';
         showElement.innerHTML += el;
         document.body.appendChild(showElement);
+
+        
     }
 
     async function fetchUsers(url) {
