@@ -47,6 +47,11 @@
 // const selectedNum = document.createElement('select');
 // selectedNum.setAttribute('id', 'selected-number');
 
+// const defaultOption = document.createElement('option');
+// defaultOption.setAttribute('value', ''); // Set value to empty string
+// defaultOption.innerHTML = ''; // Set innerHTML to empty string
+// selectedNum.appendChild(defaultOption);
+
 // for (let i = 1; i <= 10; i++) {
 //     const option = document.createElement('option');
 //     option.setAttribute('value', i);
@@ -59,53 +64,58 @@
 // selectedNum.addEventListener('change', function () {
 //     const selectedValue = selectedNum.value;
 //     console.log("Selected value:", selectedValue);
+
+//     fetch('https://jsonplaceholder.typicode.com/users')
+//         .then(response => response.json())
+//         .then(json => {
+//             const user = json[selectedValue - 1]; // Adjusting index to match the selected value
+//             const newRow = `User ID: ${user.id}, Username: ${user.username}, Email: ${user.email}, City: ${user.address.city}`;
+//             console.log(newRow);
+//             const showElement = document.createElement('div');
+//             // Set the inner HTML of the new div element to the newRow content
+//             showElement.innerHTML = newRow;
+
+//             // Append the new div element to the HTML body
+//             document.body.appendChild(showElement);
+//         });
 // });
 
+// with jquery
 
-// fetch('https://jsonplaceholder.typicode.com/users')
-//     .then(response => response.json())
-//     .then(json => {
-//         json.forEach(user => {
-//         const newRow = 
-//         `<p> ${user.id[selectedValue]} <p/>`;
-//         console.log(newRow);
-//     }); 
-//     });
+$(function() {
+    // Create the select element
+    const selectedNum = $('<select>').attr('id', 'selected-number');
 
-const selectedNum = document.createElement('select');
-selectedNum.setAttribute('id', 'selected-number');
+    // Add the default empty option
+    const defaultOption = $('<option>').attr('value', '').html('');
+    selectedNum.append(defaultOption);
 
-const defaultOption = document.createElement('option');
-defaultOption.setAttribute('value', ''); // Set value to empty string
-defaultOption.innerHTML = ''; // Set innerHTML to empty string
-selectedNum.appendChild(defaultOption);
+    // Add options from 1 to 10
+    for (let i = 1; i <= 10; i++) {
+        const option = $('<option>').attr('value', i).html(i);
+        selectedNum.append(option);
+    }
 
-for (let i = 1; i <= 10; i++) {
-    const option = document.createElement('option');
-    option.setAttribute('value', i);
-    option.innerHTML = i;
-    selectedNum.appendChild(option);
-}
+    // Append the select element to the body
+    $('body').append(selectedNum);
 
-document.body.appendChild(selectedNum);
+    // Add change event listener inside the jQuery function
+    selectedNum.on('change', function () {
+        const selectedValue = selectedNum.val();
+        console.log("Selected value:", selectedValue);
 
-selectedNum.addEventListener('change', function () {
-    const selectedValue = selectedNum.value;
-    console.log("Selected value:", selectedValue);
+        fetch('https://jsonplaceholder.typicode.com/users')
+            .then(response => response.json())
+            .then(json => {
+                const user = json[selectedValue - 1]; // Adjusting index to match the selected value
+                const newRow = `User ID: ${user.id}, Username: ${user.username}, Email: ${user.email}, City: ${user.address.city}`;
+                console.log(newRow);
+                const showElement = document.createElement('div');
+                // Set the inner HTML of the new div element to the newRow content
+                showElement.innerHTML = newRow;
 
-    fetch('https://jsonplaceholder.typicode.com/users')
-        .then(response => response.json())
-        .then(json => {
-            const user = json[selectedValue - 1]; // Adjusting index to match the selected value
-            const newRow = `User ID: ${user.id}, Username: ${user.username}, Email: ${user.email}, City: ${user.address.city}`;
-            console.log(newRow);
-            const showElement = document.createElement('div');
-            // Set the inner HTML of the new div element to the newRow content
-            showElement.innerHTML = newRow;
-
-            // Append the new div element to the HTML body
-            document.body.appendChild(showElement);
-        });
+                // Append the new div element to the HTML body
+                document.body.appendChild(showElement);
+            });
+    });
 });
-
-
